@@ -50,6 +50,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setIsLoading(true);
+      console.log('Attempting login with:', { email, password });
+      
       const response = await fetch('http://localhost:3001/api/auth/login', {
         method: 'POST',
         headers: {
@@ -58,11 +60,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: JSON.stringify({ email, password }),
       });
 
+      console.log('Login response status:', response.status);
+      console.log('Login response ok:', response.ok);
+
       if (!response.ok) {
-        throw new Error('Login failed');
+        const errorText = await response.text();
+        console.error('Login failed with response:', errorText);
+        throw new Error(`Login failed: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
+      console.log('Login successful, received data:', data);
       
       setToken(data.token);
       setUser(data.user);
