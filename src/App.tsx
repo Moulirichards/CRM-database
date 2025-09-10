@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Leads from "./pages/Leads";
 import Opportunities from "./pages/Opportunities";
 import Settings from "./pages/Settings";
+import Debug from "./pages/Debug";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/debug" element={<Debug />} />
             <Route 
               path="/dashboard" 
               element={

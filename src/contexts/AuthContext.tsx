@@ -51,6 +51,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setIsLoading(true);
+      console.log('=== LOGIN DEBUG INFO ===');
+      console.log('API_BASE_URL:', API_BASE_URL);
+      console.log('Full login URL:', `${API_BASE_URL}/auth/login`);
       console.log('Attempting login with:', { email, password });
       
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -63,10 +66,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log('Login response status:', response.status);
       console.log('Login response ok:', response.ok);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Login failed with response:', errorText);
+        console.error('Response status:', response.status);
         throw new Error(`Login failed: ${response.status} - ${errorText}`);
       }
 
@@ -82,7 +87,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       return true;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login error details:', error);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
       return false;
     } finally {
       setIsLoading(false);
