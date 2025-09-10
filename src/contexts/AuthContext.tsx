@@ -90,6 +90,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.error('Login error details:', error);
       console.error('Error message:', error.message);
       console.error('Error stack:', error.stack);
+      
+      // Check if it's a network error (backend not available)
+      if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        console.error('Backend server is not available. Please check if the backend is deployed and running.');
+      }
+      
       return false;
     } finally {
       setIsLoading(false);
