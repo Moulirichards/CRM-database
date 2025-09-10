@@ -252,16 +252,53 @@ The application uses a JSON file (`public/db.json`) as the database. In producti
 
 ## 🚀 Deployment
 
-### Frontend (Vercel/Netlify)
-```bash
-npm run build
-# Deploy the dist folder
+### Prerequisites
+1. Deploy the backend first to a hosting service (Railway, Heroku, Render, etc.)
+2. Note the backend URL for environment variable configuration
+
+### Backend Deployment
+
+#### Option 1: Railway
+1. Go to [Railway.app](https://railway.app)
+2. Connect your GitHub repository
+3. Select the `backend` folder
+4. Railway will automatically detect it's a Node.js app
+5. Add environment variable: `JWT_SECRET=your-secret-key-here`
+6. Deploy and note the URL (e.g., `https://your-app.railway.app`)
+
+#### Option 2: Render
+1. Go to [Render.com](https://render.com)
+2. Create a new Web Service
+3. Connect your GitHub repository
+4. Set build command: `cd backend && npm install`
+5. Set start command: `cd backend && npm start`
+6. Add environment variable: `JWT_SECRET=your-secret-key-here`
+7. Deploy and note the URL
+
+### Frontend Deployment (Vercel)
+
+1. **Set Environment Variable in Vercel:**
+   - Go to your Vercel project settings
+   - Navigate to "Environment Variables"
+   - Add: `VITE_API_URL` = `https://your-backend-url.com/api`
+   - Make sure to set it for "Production", "Preview", and "Development"
+
+2. **Deploy:**
+   ```bash
+   npm run build
+   # Deploy the dist folder to Vercel
+   ```
+
+### Environment Variables
+
+Create a `.env.local` file for local development:
+```env
+VITE_API_URL=http://localhost:3001/api
 ```
 
-### Backend (Railway/Heroku)
-```bash
-cd backend
-# Deploy with package.json scripts
+For production, set the environment variable in your hosting platform:
+```env
+VITE_API_URL=https://your-backend-url.com/api
 ```
 
 ## 🤝 Contributing

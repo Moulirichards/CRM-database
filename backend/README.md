@@ -1,140 +1,61 @@
-# Sales Swift CRM Backend
+# Backend Deployment Guide
 
-A Node.js Express backend API for the Sales Swift CRM application.
+## Quick Deploy to Railway
 
-## Features
+1. **Install Railway CLI:**
+   ```bash
+   npm install -g @railway/cli
+   ```
 
-- **Authentication**: JWT-based authentication with role-based access control
-- **User Management**: CRUD operations for users with roles (rep, manager, admin)
-- **Lead Management**: Track leads with statuses (New, Contacted, Qualified)
-- **Opportunity Management**: Manage sales opportunities with stages (Discovery, Proposal, Won, Lost)
-- **Dashboard Stats**: Get aggregated statistics for dashboard
-- **Data Validation**: Input validation using express-validator
-- **CORS Support**: Cross-origin resource sharing enabled
+2. **Login to Railway:**
+   ```bash
+   railway login
+   ```
 
-## Database Schema
+3. **Deploy:**
+   ```bash
+   railway init
+   railway up
+   ```
 
-### Users
-```json
-{
-  "id": "u123",
-  "name": "Alice",
-  "email": "alice@acme.com",
-  "password": "...",
-  "role": "rep" // rep | manager | admin
-}
-```
+4. **Set Environment Variables:**
+   ```bash
+   railway variables set JWT_SECRET=your-super-secret-jwt-key-here
+   railway variables set FRONTEND_URL=https://your-vercel-app.vercel.app
+   ```
 
-### Leads
-```json
-{
-  "id": "l001",
-  "name": "Bob Buyer",
-  "email": "bob@buyer.com",
-  "phone": "9999999999",
-  "status": "New", // New | Contacted | Qualified
-  "ownerId": "u123"
-}
-```
+## Quick Deploy to Render
 
-### Opportunities
-```json
-{
-  "id": "o001",
-  "title": "Bob Buyer – First Deal",
-  "value": 5000,
-  "stage": "Discovery", // Discovery | Proposal | Won | Lost
-  "ownerId": "u123",
-  "leadId": "l001"
-}
-```
-
-## Installation
-
-1. Navigate to the backend directory:
-```bash
-cd backend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development server:
-```bash
-npm run dev
-```
-
-Or start the production server:
-```bash
-npm start
-```
-
-The server will run on `http://localhost:3001`
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/login` - Login and get JWT token
-
-### Users
-- `GET /api/users` - Get all users (requires authentication)
-- `GET /api/users/:id` - Get user by ID
-- `POST /api/users` - Create new user
-
-### Leads
-- `GET /api/leads` - Get all leads (supports ?ownerId filter)
-- `GET /api/leads/:id` - Get lead by ID
-- `POST /api/leads` - Create new lead
-- `PUT /api/leads/:id` - Update lead
-- `DELETE /api/leads/:id` - Delete lead
-
-### Opportunities
-- `GET /api/opportunities` - Get all opportunities (supports ?ownerId and ?stage filters)
-- `GET /api/opportunities/:id` - Get opportunity by ID
-- `POST /api/opportunities` - Create new opportunity
-- `PUT /api/opportunities/:id` - Update opportunity
-- `DELETE /api/opportunities/:id` - Delete opportunity
-
-### Dashboard
-- `GET /api/dashboard/stats` - Get dashboard statistics (supports ?ownerId filter)
-
-### Health Check
-- `GET /api/health` - Server health check
-
-## Authentication
-
-All protected routes require a JWT token in the Authorization header:
-```
-Authorization: Bearer <your-jwt-token>
-```
-
-## Sample Data
-
-The database comes with sample data:
-- **Users**: Alice (rep), Bob Manager (manager), Carol Admin (admin)
-- **Leads**: Bob Buyer, Sarah Customer, Mike Prospect
-- **Opportunities**: Various deals in different stages
+1. Go to [Render.com](https://render.com)
+2. Create a new "Web Service"
+3. Connect your GitHub repository
+4. Set the following:
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+   - **Environment:** `Node`
+5. Add environment variables:
+   - `JWT_SECRET`: your-super-secret-jwt-key-here
+   - `FRONTEND_URL`: https://your-vercel-app.vercel.app
+6. Deploy
 
 ## Environment Variables
 
-- `PORT`: Server port (default: 3001)
-- `JWT_SECRET`: Secret key for JWT tokens (default: 'your-secret-key')
+- `PORT`: Server port (automatically set by hosting platform)
+- `JWT_SECRET`: Secret key for JWT tokens (required)
+- `FRONTEND_URL`: Frontend URL for CORS (optional, defaults to localhost)
 
-## Development
+## Database
 
-The backend uses:
-- **Express.js** for the web framework
-- **CORS** for cross-origin requests
-- **JWT** for authentication
-- **express-validator** for input validation
-- **UUID** for generating unique IDs
-- **bcryptjs** for password hashing (ready for production use)
+The app uses a JSON file as database (`public/db.json`). In production, consider migrating to a proper database like PostgreSQL or MongoDB.
 
-## Notes
+## Health Check
 
-- Passwords are stored in plain text for demo purposes. In production, use bcrypt for hashing.
-- The database is stored in JSON format in `../public/db.json`
-- All timestamps are handled by the application logic
-- Error handling includes proper HTTP status codes and error messages
+Once deployed, test your backend:
+```bash
+curl https://your-backend-url.com/api/health
+```
+
+Should return:
+```json
+{"status":"OK","timestamp":"2025-09-10T16:18:03.124Z"}
+```

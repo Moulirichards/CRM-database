@@ -1,6 +1,5 @@
 import { User } from '../contexts/AuthContext';
-
-const API_BASE_URL = 'http://localhost:3001/api';
+import { API_BASE_URL } from '../config/api';
 
 interface ApiResponse<T> {
   data?: T;
