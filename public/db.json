@@ -1,0 +1,85 @@
+{
+  "users": [
+    {
+      "id": "u123",
+      "name": "Alice",
+      "email": "alice@acme.com",
+      "password": "password123",
+      "role": "rep"
+    },
+    {
+      "id": "u124",
+      "name": "Bob Manager",
+      "email": "bob@acme.com",
+      "password": "password123",
+      "role": "manager"
+    },
+    {
+      "id": "u125",
+      "name": "Carol Admin",
+      "email": "carol@acme.com",
+      "password": "password123",
+      "role": "admin"
+    }
+  ],
+  "leads": [
+    {
+      "id": "l001",
+      "name": "Bob Buyer",
+      "email": "bob@buyer.com",
+      "phone": "9999999999",
+      "status": "New",
+      "ownerId": "u123"
+    },
+    {
+      "id": "l002",
+      "name": "Sarah Customer",
+      "email": "sarah@customer.com",
+      "phone": "8888888888",
+      "status": "Contacted",
+      "ownerId": "u123"
+    },
+    {
+      "id": "l003",
+      "name": "Mike Prospect",
+      "email": "mike@prospect.com",
+      "phone": "7777777777",
+      "status": "Qualified",
+      "ownerId": "u124"
+    },
+    {
+      "id": "793d533c-1348-4c41-8792-3e8f764dc0c6",
+      "name": "Mouli Pappu",
+      "email": "moulirichards9@gmail.com",
+      "phone": "09392853320",
+      "status": "New",
+      "ownerId": "u123"
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "o001",
+      "title": "Bob Buyer – First Deal",
+      "value": 5000,
+      "stage": "Discovery",
+      "ownerId": "u123",
+      "leadId": "l001"
+    },
+    {
+      "id": "o002",
+      "title": "Sarah Customer – Website Project",
+      "value": 12000,
+      "stage": "Proposal",
+      "ownerId": "u123",
+      "leadId": "l002"
+    },
+    {
+      "id": "o003",
+      "title": "Mike Prospect – Enterprise Solution",
+      "value": 25000,
+      "stage": "Won",
+      "ownerId": "u124",
+      "leadId": "l003"
+    }
+  ]
+}
