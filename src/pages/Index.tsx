@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, Users, BarChart3, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10">
       {/* Hero Section */}
@@ -71,10 +74,19 @@ const Index = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild className="text-lg px-8 py-6">
-                <Link to="/dashboard">
-                  View Demo
-                </Link>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="text-lg px-8 py-6"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  const success = await login('bob@acme.com', 'password123');
+                  if (success) {
+                    navigate('/dashboard');
+                  }
+                }}
+              >
+                View Demo
               </Button>
             </div>
             <p className="text-sm text-muted-foreground">
