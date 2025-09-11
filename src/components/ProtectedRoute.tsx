@@ -14,6 +14,14 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const { isAuthenticated, user, isLoading } = useAuth();
   const location = useLocation();
 
+  // Check if we're in demo mode
+  const isDemoMode = localStorage.getItem('demoMode') === 'true';
+
+  if (isDemoMode) {
+    // In demo mode, bypass all checks and render the children
+    return <>{children}</>;
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">

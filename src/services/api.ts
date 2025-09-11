@@ -1,5 +1,12 @@
-import { User } from '../contexts/AuthContext';
 import { API_BASE_URL } from '../config/api';
+import { demoService } from './demoData';
+
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: 'rep' | 'manager' | 'admin';
+};
 
 interface ApiResponse<T> {
   data?: T;
@@ -19,6 +26,51 @@ class ApiService {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
+    // Check if we're in demo mode
+    const isDemoMode = localStorage.getItem('demoMode') === 'true';
+    
+    // Handle demo mode requests
+    if (isDemoMode) {
+      try {
+        // Route demo requests to the appropriate demo service method
+        if (endpoint === '/dashboard/stats') {
+          const result = await demoService.getDashboardStats();
+          return { data: result.data as unknown as T };
+        } else if (endpoint.startsWith('/leads')) {
+          if (endpoint === '/leads') {
+            const result = await demoService.getLeads();
+            return { data: result.data as unknown as T };
+          } else {
+            // Handle single lead request (/leads/:id)
+            const id = endpoint.split('/').pop();
+            if (id) {
+              const result = await demoService.getLeadById(id);
+              return { data: result.data as unknown as T };
+            }
+          }
+        } else if (endpoint.startsWith('/opportunities')) {
+          if (endpoint === '/opportunities') {
+            const result = await demoService.getOpportunities();
+            return { data: result.data as unknown as T };
+          } else {
+            // Handle single opportunity request (/opportunities/:id)
+            const id = endpoint.split('/').pop();
+            if (id) {
+              const result = await demoService.getOpportunityById(id);
+              return { data: result.data as unknown as T };
+            }
+          }
+        }
+        
+        // For any other endpoints, return an empty array or null
+        return { data: [] as unknown as T };
+      } catch (error) {
+        console.error('Demo data error:', error);
+        return { error: 'Failed to load demo data' };
+      }
+    }
+
+    // Regular API request for non-demo mode
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,

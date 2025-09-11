@@ -78,12 +78,12 @@ const Index = () => {
                 size="lg" 
                 variant="outline" 
                 className="text-lg px-8 py-6"
-                onClick={async (e) => {
+                onClick={(e) => {
                   e.preventDefault();
-                  const success = await login('bob@acme.com', 'password123');
-                  if (success) {
-                    navigate('/dashboard');
-                  }
+                  // Set demo mode in local storage
+                  localStorage.setItem('demoMode', 'true');
+                  // Directly navigate to dashboard
+                  navigate('/dashboard');
                 }}
               >
                 View Demo

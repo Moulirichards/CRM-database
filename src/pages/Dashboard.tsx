@@ -24,11 +24,32 @@ export default function Dashboard() {
   const loadDashboardStats = async () => {
     try {
       setIsLoading(true);
-      const ownerId = user?.role === 'rep' ? user.id : undefined;
-      const response = await apiService.getDashboardStats(ownerId);
+      const isDemoMode = localStorage.getItem('demoMode') === 'true';
       
-      if (response.data) {
-        setStats(response.data);
+      if (isDemoMode) {
+        // Use demo data directly
+        const demoStats = {
+          totalLeads: 42,
+          newLeads: 12,
+          contactedLeads: 18,
+          qualifiedLeads: 12,
+          totalOpportunities: 28,
+          discoveryOpportunities: 10,
+          proposalOpportunities: 8,
+          wonOpportunities: 6,
+          lostOpportunities: 4,
+          totalValue: 1250000,
+          wonValue: 850000
+        };
+        setStats(demoStats);
+      } else {
+        // Regular API call
+        const ownerId = user?.role === 'rep' ? user.id : undefined;
+        const response = await apiService.getDashboardStats(ownerId);
+        
+        if (response.data) {
+          setStats(response.data);
+        }
       }
     } catch (error) {
       console.error('Failed to load dashboard stats:', error);

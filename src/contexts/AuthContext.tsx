@@ -37,6 +37,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Check for demo mode first
+    const isDemoMode = localStorage.getItem('demoMode') === 'true';
+    
+    if (isDemoMode) {
+      // Set demo user
+      const demoUser: User = {
+        id: 'demo-user-123',
+        name: 'Demo User',
+        email: 'demo@example.com',
+        role: 'manager' // Default to manager role for demo
+      };
+      setUser(demoUser);
+      setToken('demo-token');
+      setIsLoading(false);
+      return;
+    }
+
     // Check for stored token on app load
     const storedToken = localStorage.getItem('authToken');
     const storedUser = localStorage.getItem('user');
@@ -49,73 +66,83 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
+    // Check if in demo mode
+    const isDemoMode = localStorage.getItem('demoMode') === 'true';
+    
+    if (isDemoMode) {
+      const demoUser: User = {
+        id: 'demo-user-123',
+        name: 'Demo User',
+        email: 'demo@example.com',
+        role: 'manager' // Default to manager role for demo
+      };
+      setUser(demoUser);
+      setToken('demo-token');
+      return true;
+    }
+
     try {
-      setIsLoading(true);
-      console.log('=== LOGIN DEBUG INFO ===');
-      console.log('API_BASE_URL:', API_BASE_URL);
-      console.log('Full login URL:', `${API_BASE_URL}/auth/login`);
-      console.log('Attempting login with:', { email, password });
-      
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
+        credentials: 'include'
       });
 
-      console.log('Login response status:', response.status);
-      console.log('Login response ok:', response.ok);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Login failed with response:', errorText);
-        console.error('Response status:', response.status);
-        throw new Error(`Login failed: ${response.status} - ${errorText}`);
+        throw new Error('Login failed');
       }
 
       const data = await response.json();
-      console.log('Login successful, received data:', data);
+      
+      // Store the token and user data
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
       
       setToken(data.token);
       setUser(data.user);
       
-      // Store in localStorage
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      
       return true;
     } catch (error) {
-      console.error('Login error details:', error);
-      console.error('Error message:', error.message);
-      console.error('Error stack:', error.stack);
-      
-      // Check if it's a network error (backend not available)
-      if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-        console.error('Backend server is not available. Please check if the backend is deployed and running.');
-      }
-      
+      console.error('Login error:', error);
       return false;
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const logout = () => {
-    setToken(null);
-    setUser(null);
+    // Check if in demo mode
+    const isDemoMode = localStorage.getItem('demoMode') === 'true';
+    
+    if (isDemoMode) {
+      // Clear demo mode
+      localStorage.removeItem('demoMode');
+    }
+    
+    // Clear the stored token and user data
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
   };
 
+  // Check if we're in demo mode and set isAuthenticated accordingly
+  const isDemoMode = localStorage.getItem('demoMode') === 'true';
+  const isAuthenticated = isDemoMode ? true : (!!user && !!token);
+
   const value: AuthContextType = {
-    user,
-    token,
+    user: isDemoMode ? {
+      id: 'demo-user-123',
+      name: 'Demo User',
+      email: 'demo@example.com',
+      role: 'manager'
+    } : user,
+    token: isDemoMode ? 'demo-token' : token,
     login,
     logout,
-    isLoading,
-    isAuthenticated: !!user && !!token,
+    isLoading: isDemoMode ? false : isLoading,
+    isAuthenticated,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
