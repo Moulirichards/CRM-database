@@ -2,6 +2,8 @@
 
 A modern, full-stack CRM application built with React, TypeScript, Node.js, and Express. Features role-based access control, lead management, opportunity tracking, and real-time dashboard analytics.
 
+note: if the  demo login details are not working try view demo button to see manager portal
+
 ## 🚀 Features
 
 ### ✅ **Authentication & Authorization**
